@@ -1,7 +1,6 @@
 import os
 import time
-import shutil
-import requests
+import urllib.request
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options
@@ -38,6 +37,7 @@ def download_pics_mercari():
         driver = set_driver("chromedriver", False)
 
     driver.get("https://jp.mercari.com/item/m60273403967")
+    time.sleep(10)
     
     
     # ボタンをクリック
@@ -47,17 +47,8 @@ def download_pics_mercari():
     elements = driver.find_elements_by_tag_name('mer-item-thumbnail')
     for element in elements:
         pic_url = element.get_attribute('src')
+        urllib.request.urlretrieve(pic_url, 'logo.png')
   
-        r = requests.get(pic_url, stream = True)
-        if r.status_code == 200:
-            # Set decode_content value to True, otherwise the downloaded image file's size will be zero.
-            r.raw.decode_content = True
-            # Open a local file with wb ( write binary ) permission.
-            with open(pic_url,'wb') as f:
-                shutil.copyfileobj(r.raw, f)
-            print('Image sucessfully Downloaded: ',pic_url)
-        else:
-            print('Image Couldn\'t be retreived')
 
 if __name__ == "__main__":
     download_pics_mercari()
